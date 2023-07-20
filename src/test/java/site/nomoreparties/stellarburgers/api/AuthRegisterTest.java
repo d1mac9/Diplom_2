@@ -1,6 +1,8 @@
 package site.nomoreparties.stellarburgers.api;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.api.authregister.models.RegisterRequest;
 
@@ -12,20 +14,25 @@ import static site.nomoreparties.stellarburgers.api.helpers.BaseClient.validateR
 import static site.nomoreparties.stellarburgers.api.helpers.Constants.EMAIL_PASSWORD_NAME_REQUIRED;
 import static site.nomoreparties.stellarburgers.api.helpers.Constants.USER_ALREADY_EXIST;
 
+@DisplayName("Регистрация юзера")
 public class AuthRegisterTest extends BaseTest {
-    RegisterRequest body;
+    private RegisterRequest body;
+    @Before
+    public void createTestData(){
+        body = generateUser();
+    }
 
     @Test
+    @DisplayName("Создание нового юзера")
     public void shouldCreateNewUser() {
-        body = generateUser();
         Response response = sendRequestRegisterUser(body);
 
         checkUserIsCreatedOrLoggedIn(response, body);
     }
 
     @Test
+    @DisplayName("Нельзя создать существующего юзера")
     public void shouldNotCreateExistingUser() {
-        body = generateUser();
         sendRequestRegisterUser(body);
         Response response = sendRequestRegisterUser(body);
 
@@ -33,6 +40,7 @@ public class AuthRegisterTest extends BaseTest {
     }
 
     @Test
+    @DisplayName("Нельзя создать юзера без поля email")
     public void shouldNotCreateUserWithoutEmail() {
         body = new RegisterRequest();
         body.setPassword("123456");

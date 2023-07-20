@@ -1,8 +1,8 @@
 package site.nomoreparties.stellarburgers.api.authregister.models;
 
-public class User{
-    public String email;
-    public String name;
+public class User {
+    private String email;
+    private String name;
 
     public User() {
     }

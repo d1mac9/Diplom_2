@@ -1,10 +1,10 @@
 package site.nomoreparties.stellarburgers.api.authregister.models;
 
 public class RegisterResponse {
-    public boolean success;
-    public String accessToken;
-    public String refreshToken;
-    public RegisterRequest user;
+    private boolean success;
+    private String accessToken;
+    private String refreshToken;
+    private RegisterRequest user;
 
     public RegisterResponse() {
     }

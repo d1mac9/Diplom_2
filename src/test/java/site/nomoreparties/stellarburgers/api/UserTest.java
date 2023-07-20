@@ -1,6 +1,9 @@
 package site.nomoreparties.stellarburgers.api;
 
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.api.authregister.models.RegisterRequest;
 
@@ -11,12 +14,24 @@ import static site.nomoreparties.stellarburgers.api.helpers.BaseClient.validateR
 import static site.nomoreparties.stellarburgers.api.helpers.Constants.SHOULD_BE_AUTHORIZED;
 import static site.nomoreparties.stellarburgers.api.user.UserClient.*;
 
+@DisplayName("Изменение юзера")
 public class UserTest extends BaseTest {
-    RegisterRequest body;
-    @Test
-    public void shouldChangeUserEmailAndUsername(){
+    private RegisterRequest body;
+    private String accessToken;
+    @Before
+    public void createTestData(){
         body = generateUser();
-        String accessToken = registerUser(body).getAccessToken();
+        accessToken = registerUser(body).getAccessToken();
+    }
+    @After
+    public void deleteTestData(){
+        if(accessToken != null){
+            deleteUser(accessToken);
+        }
+    }
+    @Test
+    @DisplayName("Изменение email и username для юзера")
+    public void shouldChangeUserEmailAndUsername(){
         body.setEmail(generateEmail());
         body.setName(generateUsername());
         body.setPassword(null);
@@ -25,9 +40,8 @@ public class UserTest extends BaseTest {
         checkUserIsUpdated(response, body);
     }
     @Test
+    @DisplayName("Нельзя изменить поля юзеру без токена")
     public void shouldNotChangeUserWithoutAuthorizationToken(){
-        body = generateUser();
-        registerUser(body);
         body.setEmail(generateEmail());
         body.setName(generateUsername());
         body.setPassword(null);

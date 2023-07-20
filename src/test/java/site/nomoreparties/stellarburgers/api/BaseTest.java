@@ -6,7 +6,7 @@ import static site.nomoreparties.stellarburgers.api.helpers.TestConfig.initConfi
 
 public class BaseTest {
     @BeforeClass
-    public static void setUp(){
+    public static void setUp() {
         initConfig();
     }
 }
