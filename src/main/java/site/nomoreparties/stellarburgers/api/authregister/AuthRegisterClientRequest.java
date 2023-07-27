@@ -7,10 +7,9 @@ import site.nomoreparties.stellarburgers.api.authregister.models.RegisterRespons
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_OK;
-import static org.hamcrest.Matchers.*;
 import static site.nomoreparties.stellarburgers.api.helpers.ApiUrls.AUTH_REGISTER;
 
-public class AuthRegisterClient {
+public class AuthRegisterClientRequest {
     @Step("Получение объекта юзера после запроса на регистрацию юзера")
     public static RegisterResponse registerUser(RegisterRequest requestBody) {
         return sendRequestRegisterUser(requestBody)
@@ -21,6 +20,7 @@ public class AuthRegisterClient {
                 .as(RegisterResponse.class);
 
     }
+
     @Step("Отправка запроса на регистрацию юзера")
     public static Response sendRequestRegisterUser(RegisterRequest requestBody) {
         return given()
@@ -29,18 +29,6 @@ public class AuthRegisterClient {
                 .post(AUTH_REGISTER);
 
     }
-    @Step("Проверка, что юзер авторизован или создан успешно")
-    public static void checkUserIsCreatedOrLoggedIn(Response response, RegisterRequest user){
-        response
-                .then().assertThat().statusCode(SC_OK)
-                .and()
-                .body("success", equalTo(true))
-                .body("user.email", equalTo(user.getEmail()))
-                .body("user.name", equalTo(user.getName()))
-                .body("accessToken", notNullValue())
-                .body("refreshToken", notNullValue());
-    }
-
 
 
 }

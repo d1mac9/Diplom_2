@@ -6,18 +6,20 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.api.authregister.models.RegisterRequest;
+import site.nomoreparties.stellarburgers.api.order.OrderClientResponse;
 import site.nomoreparties.stellarburgers.api.order.models.Ingredients;
 
 import java.util.List;
 
-import static org.apache.http.HttpStatus.*;
-import static site.nomoreparties.stellarburgers.api.authregister.AuthRegisterClient.registerUser;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_INTERNAL_SERVER_ERROR;
+import static site.nomoreparties.stellarburgers.api.authregister.AuthRegisterClientRequest.registerUser;
 import static site.nomoreparties.stellarburgers.api.authregister.UserGenerator.generateUser;
 import static site.nomoreparties.stellarburgers.api.helpers.BaseClient.validateResponseError;
 import static site.nomoreparties.stellarburgers.api.helpers.Constants.INGREDIENT_ID_PROVIDED;
-import static site.nomoreparties.stellarburgers.api.helpers.Constants.SHOULD_BE_AUTHORIZED;
-import static site.nomoreparties.stellarburgers.api.order.OrderClient.*;
-import static site.nomoreparties.stellarburgers.api.user.UserClient.deleteUser;
+import static site.nomoreparties.stellarburgers.api.order.OrderClientRequest.sendOrderCreateRequest;
+import static site.nomoreparties.stellarburgers.api.order.OrderClientRequest.sendOrderCreateRequestWithoutAccessToken;
+import static site.nomoreparties.stellarburgers.api.user.UserClientRequest.deleteUser;
 
 @DisplayName("Создание заказа")
 public class CreateOrderTest extends BaseTest {
@@ -46,7 +48,7 @@ public class CreateOrderTest extends BaseTest {
         ingredients.setIngredients(List.of(ingredientHash));
         Response response = sendOrderCreateRequestWithoutAccessToken(ingredients);
 
-        checkOrderIsCreated(response);
+        OrderClientResponse.checkOrderIsCreated(response);
     }
 
     @Test
@@ -55,7 +57,7 @@ public class CreateOrderTest extends BaseTest {
         ingredients.setIngredients(List.of(ingredientHash));
         Response response = sendOrderCreateRequest(ingredients, accessToken);
 
-        checkOrderIsCreated(response);
+        OrderClientResponse.checkOrderIsCreated(response);
     }
 
     @Test
@@ -73,7 +75,7 @@ public class CreateOrderTest extends BaseTest {
         ingredients.setIngredients(List.of("61c0c5a71d1f82001bdaaa6d", "61c0c5a71d1f82001bdaaa6f"));
         Response response = sendOrderCreateRequest(ingredients, accessToken);
 
-        checkOrderIsCreated(response);
+        OrderClientResponse.checkOrderIsCreated(response);
     }
 
     @Test

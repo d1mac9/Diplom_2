@@ -2,30 +2,42 @@ package site.nomoreparties.stellarburgers.api;
 
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.Response;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.api.authregister.models.RegisterRequest;
 
 import static org.apache.http.HttpStatus.SC_FORBIDDEN;
-import static site.nomoreparties.stellarburgers.api.authregister.AuthRegisterClient.checkUserIsCreatedOrLoggedIn;
-import static site.nomoreparties.stellarburgers.api.authregister.AuthRegisterClient.sendRequestRegisterUser;
+import static site.nomoreparties.stellarburgers.api.authregister.AuthRegisterClientRequest.sendRequestRegisterUser;
+import static site.nomoreparties.stellarburgers.api.authregister.AuthRegisterClientResponse.checkUserIsCreatedOrLoggedIn;
 import static site.nomoreparties.stellarburgers.api.authregister.UserGenerator.generateUser;
 import static site.nomoreparties.stellarburgers.api.helpers.BaseClient.validateResponseError;
 import static site.nomoreparties.stellarburgers.api.helpers.Constants.EMAIL_PASSWORD_NAME_REQUIRED;
 import static site.nomoreparties.stellarburgers.api.helpers.Constants.USER_ALREADY_EXIST;
+import static site.nomoreparties.stellarburgers.api.user.UserClientRequest.deleteUser;
 
 @DisplayName("Регистрация юзера")
 public class AuthRegisterTest extends BaseTest {
     private RegisterRequest body;
+    private String accessToken;
+
     @Before
-    public void createTestData(){
+    public void createTestData() {
         body = generateUser();
+    }
+
+    @After
+    public void deleteTestData() {
+        if (accessToken != null) {
+            deleteUser(accessToken);
+        }
     }
 
     @Test
     @DisplayName("Создание нового юзера")
     public void shouldCreateNewUser() {
         Response response = sendRequestRegisterUser(body);
+        accessToken = response.then().extract().path("accessToken");
 
         checkUserIsCreatedOrLoggedIn(response, body);
     }

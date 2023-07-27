@@ -6,6 +6,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import site.nomoreparties.stellarburgers.api.authregister.models.RegisterRequest;
+import site.nomoreparties.stellarburgers.api.order.OrderClientResponse;
 import site.nomoreparties.stellarburgers.api.order.models.Ingredients;
 import site.nomoreparties.stellarburgers.api.order.models.OrderResponse;
 
@@ -13,12 +14,12 @@ import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
-import static site.nomoreparties.stellarburgers.api.authregister.AuthRegisterClient.registerUser;
+import static site.nomoreparties.stellarburgers.api.authregister.AuthRegisterClientRequest.registerUser;
 import static site.nomoreparties.stellarburgers.api.authregister.UserGenerator.generateUser;
 import static site.nomoreparties.stellarburgers.api.helpers.BaseClient.validateResponseError;
 import static site.nomoreparties.stellarburgers.api.helpers.Constants.SHOULD_BE_AUTHORIZED;
-import static site.nomoreparties.stellarburgers.api.order.OrderClient.*;
-import static site.nomoreparties.stellarburgers.api.user.UserClient.deleteUser;
+import static site.nomoreparties.stellarburgers.api.order.OrderClientRequest.*;
+import static site.nomoreparties.stellarburgers.api.user.UserClientRequest.deleteUser;
 
 @DisplayName("Получение ордера по юзеру")
 public class GetOrderTest extends BaseTest {
@@ -33,7 +34,7 @@ public class GetOrderTest extends BaseTest {
         accessToken = registerUser(body).getAccessToken();
         ingredients.setIngredients(List.of(ingredientHash));
         Response response = sendOrderCreateRequest(ingredients, accessToken);
-        checkOrderIsCreated(response);
+        OrderClientResponse.checkOrderIsCreated(response);
     }
 
     @After
@@ -46,7 +47,7 @@ public class GetOrderTest extends BaseTest {
     @Test
     public void shouldGetOrderByUserAndCheckIngredients() {
         Response response = sendGetOrderRequest(accessToken);
-        OrderResponse order = checkUserOrder(response);
+        OrderResponse order = OrderClientResponse.checkUserOrder(response);
         String actualResult = order.getOrders().get(0).getIngredients().get(0);
         assertEquals("Ингредиенты не совапдают", ingredientHash, actualResult);
     }
